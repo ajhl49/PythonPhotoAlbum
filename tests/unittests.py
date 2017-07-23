@@ -1,5 +1,3 @@
-#!/bin/python
-
 import albuminfo, unittest, json, sys
 from unittest.mock import Mock, MagicMock, patch
 from http.client import HTTPResponse
