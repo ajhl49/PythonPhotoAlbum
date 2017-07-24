@@ -63,8 +63,8 @@ class TestAlbumInfoFunctions(unittest.TestCase):
     @patch('albuminfo.urllib.request')
     @patch('albuminfo.sys')
     def test_get_album_info__error(self, mock_sys, mock_urllib):
-        http_mock = MagicMock(spec=HTTPResponse)
-        http_mock.read().decode.return_value = "[]"
+        """Testing that the error handling for get_album_info works as expected.
+        """
 
         mock_urllib.urlopen.side_effect = urllib.error.URLError("Test error")
 
