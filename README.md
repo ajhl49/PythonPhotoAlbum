@@ -7,5 +7,11 @@ This application requires the latest version of Python 3 in order to run properl
 ## How to Run
 The application can be run directly from the command line. While in the top-level directory of the PythonPhotoAlbum project, run:
 ```bash
-python albuminfo.py
+python albuminfo.py [album_num]
+```
+
+## Running the Unit Tests
+The unit tests for the application can be run in a similar fashion to the main application:
+```bash
+python runtests.py
 ```

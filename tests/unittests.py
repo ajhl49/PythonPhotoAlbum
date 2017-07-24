@@ -1,4 +1,4 @@
-import albuminfo, unittest, json, sys
+import albuminfo, unittest, json, sys, urllib.error
 from unittest.mock import Mock, MagicMock, patch
 from http.client import HTTPResponse
 from contextlib import contextmanager
@@ -52,13 +52,27 @@ class TestAlbumInfoFunctions(unittest.TestCase):
 
         http_mock = MagicMock(spec=HTTPResponse)
         http_mock.read().decode.return_value = expected_string
-        mock_urllib.urlopen().__enter__.return_value = http_mock
+        mock_urllib.urlopen.return_value = http_mock
 
         actual_json = albuminfo.get_album_info(1)
         self.assertEqual(actual_json, json.loads(expected_string))
 
         http_mock.read().decode.assert_called()
         mock_urllib.urlopen.assert_called_with(expected_url)
+
+    @patch('albuminfo.urllib.request')
+    @patch('albuminfo.sys')
+    def test_get_album_info__error(self, mock_sys, mock_urllib):
+        http_mock = MagicMock(spec=HTTPResponse)
+        http_mock.read().decode.return_value = "[]"
+
+        mock_urllib.urlopen.side_effect = urllib.error.URLError("Test error")
+
+        with capture_stdout(albuminfo.get_album_info, 1) as output:
+            self.assertEqual(output, "There was a problem connecting to the photo album server!\n")
+
+        mock_urllib.urlopen.assert_called()
+        mock_sys.exit.assert_called()
 
     ### Tests for albuminfo.print_album_info ###
     def test_print_album_info__happy_path(self):

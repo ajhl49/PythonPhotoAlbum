@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, json, sys, urllib.request
+import argparse, json, sys, urllib.request, urllib.error
 
 ### Global Variable Definitions ###
 album_url = 'https://jsonplaceholder.typicode.com/photos?albumId=%d'
@@ -14,9 +14,15 @@ def get_album_info(album_number):
        and negative are valid, some album numbers may return no results.
        """
 
-    with urllib.request.urlopen(album_url % album_number) as url:
-        data = json.loads(url.read().decode())
-        return data
+    try:
+        url = urllib.request.urlopen(album_url % album_number)
+    except urllib.error.URLError as err:
+        print("There was a problem connecting to the photo album server!")
+        sys.exit()
+    else:
+        with url:
+            data = json.loads(url.read().decode())
+            return data
 
 def print_album_info(album_data_list):
     """Prints information about photos in a photo album.
